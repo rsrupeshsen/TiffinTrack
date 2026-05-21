@@ -14,7 +14,7 @@ function Stars({ rating }) {
         </span>
       ))}
       <span style={{ marginLeft: 4, fontSize: 13, color: "#6B5744" }}>
-        {rating?.toFixed(1) || "—"}
+        {Number(rating || 0).toFixed(1)}
       </span>
     </span>
   );
@@ -173,7 +173,7 @@ export default function ProviderCard({ provider }) {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <Stars rating={avg_rating || 0} />
+              <Stars rating={Number(avg_rating || 0)} />
               {review_count > 0 && (
                 <span style={{ fontSize: 12, color: "#AAA" }}>
                   ({review_count})

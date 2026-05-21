@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api";
 import { useStore } from "../store/useStore";
 import toast from "react-hot-toast";
-import QRCode from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -224,7 +224,7 @@ export default function ProviderDetailPage() {
           >
             <Stars rating={provider.avg_rating || 0} />
             <span style={{ fontSize: 14, color: "#6B5744" }}>
-              {(provider.avg_rating || 0).toFixed(1)} ({reviews.length} reviews)
+              {Number(provider.avg_rating || 0).toFixed(1)} ({reviews.length} reviews)
             </span>
           </div>
 
@@ -705,7 +705,7 @@ export default function ProviderDetailPage() {
                   justifyContent: "center",
                 }}
               >
-                <QRCode
+                <QRCodeCanvas
                   value={`upi://pay?pa=${provider.upi_id}&pn=${provider.kitchen_name}&am=${selectedPlanData?.price || 0}`}
                   size={180}
                 />

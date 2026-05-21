@@ -24,7 +24,7 @@ export default function HomePage() {
     },
   });
 
-  const providers = data?.providers || [];
+  const providers = data || [];
 
   return (
     <div>

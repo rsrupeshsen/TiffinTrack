@@ -51,8 +51,11 @@ export default function TrackingMap({ providerId, customerAddress }) {
       }
     }
 
-    // WebSocket connection for live tracking
-    const wsUrl = "ws://localhost:5000";
+    // ⚡ FIXED: Use environment variable for WebSocket URL
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const wsUrl = apiUrl.replace("http", "ws");
+
+    console.log("Connecting to WebSocket:", wsUrl);
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
@@ -109,12 +112,18 @@ export default function TrackingMap({ providerId, customerAddress }) {
 
     ws.onclose = () => {
       console.log("WebSocket disconnected");
+      // Don't show error immediately - provider may not have started yet
+      setTimeout(() => {
+        if (!isDelivering) {
+          setStatus("⏳ Waiting for delivery to start...");
+        }
+      }, 2000);
     };
 
     return () => {
       ws.close();
     };
-  }, [providerId, customerAddress]);
+  }, [providerId, customerAddress, isDelivering]);
 
   return (
     <div style={{ width: "100%" }}>
