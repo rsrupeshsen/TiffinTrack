@@ -44,9 +44,9 @@ app.get("/health2", (req, res) => {
 });
 
 // ── Routes (uncomment each one AFTER you create the file) ──────────────────
-// app.use('/api/auth',          require('./routes/auth'));
-app.use('/api/providers',     require('./routes/providers'));
-// app.use('/api/subscriptions', require('./routes/subscriptions'));
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/providers", require("./routes/providers"));
+app.use("/api/subscriptions", require("./routes/subscriptions"));
 // app.use('/api/reviews',       require('./routes/reviews'));
 // app.use('/api/chat',          require('./routes/chat'));
 // app.use('/api/enquiries',     require('./routes/enquiries'));

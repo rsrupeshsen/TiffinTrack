@@ -52,7 +52,8 @@ export default function DashboardPage() {
     );
   }
 
-  const subs = data?.subscriptions || [];
+  const subs = Array.isArray(data) ? data : data?.subscriptions || [];
+
   const today = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
     day: "numeric",

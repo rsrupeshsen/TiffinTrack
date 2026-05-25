@@ -4,6 +4,7 @@ const auth = require("../middleware/auth");
 
 // GET /api/subscriptions/me
 router.get("/me", auth, async (req, res) => {
+  console.log("JWT User:", req.user);
   try {
     const result = await db.query(
       `SELECT s.*, p.kitchen_name, p.locality, p.upi_id, p.photo_url,
@@ -43,7 +44,7 @@ router.post("/", auth, async (req, res) => {
 
     const result = await db.query(
       `INSERT INTO subscriptions (customer_id, provider_id, plan_id, meal_type, status, start_date)
-       VALUES ($1, $2, $3, $4, 'pending', NOW()) RETURNING *`,
+       VALUES ($1, $2, $3, $4, 'active', NOW()) RETURNING *`,
       [req.user.userId, provider_id, plan_id, meal_type],
     );
 
@@ -79,7 +80,7 @@ router.post("/:id/pause", auth, async (req, res) => {
 router.post("/:id/cancel", auth, async (req, res) => {
   try {
     await db.query(
-      `UPDATE subscriptions SET status = 'cancelled', updated_at = NOW() WHERE id = $1 AND customer_id = $2`,
+      `UPDATE subscriptions SET status = 'cancelled' WHERE id = $1 AND customer_id = $2`,
       [req.params.id, req.user.userId],
     );
     res.json({ cancelled: true });
