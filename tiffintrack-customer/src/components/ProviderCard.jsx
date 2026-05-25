@@ -1,20 +1,18 @@
 import { Link } from "react-router-dom";
 
-// Star rating component
 function Stars({ rating }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
+    <span>
       {[1, 2, 3, 4, 5].map((i) => (
         <span
           key={i}
           className={i <= Math.round(rating) ? "star-filled" : "star-empty"}
-          style={{ fontSize: 14 }}
         >
           ★
         </span>
       ))}
       <span style={{ marginLeft: 4, fontSize: 13, color: "#6B5744" }}>
-        {Number(rating || 0).toFixed(1)}
+        {rating?.toFixed(1)}
       </span>
     </span>
   );
@@ -42,7 +40,6 @@ export default function ProviderCard({ provider }) {
       style={{ textDecoration: "none", color: "inherit" }}
     >
       <div className="card" style={{ cursor: "pointer", height: "100%" }}>
-        {/* Image */}
         <div
           style={{
             position: "relative",
@@ -55,11 +52,7 @@ export default function ProviderCard({ provider }) {
             <img
               src={photo_url}
               alt={kitchen_name}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           ) : (
             <div
@@ -75,29 +68,21 @@ export default function ProviderCard({ provider }) {
               🍱
             </div>
           )}
-
-          {/* Full badge */}
           {!accept_new && (
             <div style={{ position: "absolute", top: 12, right: 12 }}>
               <span className="badge badge-full">Full</span>
             </div>
           )}
-
-          {/* Diet badge */}
           <div style={{ position: "absolute", bottom: 12, left: 12 }}>
             <span
-              className={`badge ${
-                diet_type === "veg" ? "badge-veg" : "badge-nonveg"
-              }`}
+              className={`badge ${diet_type === "veg" ? "badge-veg" : "badge-nonveg"}`}
             >
               {diet_type === "veg" ? "🟢 Veg" : "🔴 Non-veg"}
             </span>
           </div>
         </div>
 
-        {/* Content */}
         <div style={{ padding: "14px 16px" }}>
-          {/* Title and Price */}
           <div
             style={{
               display: "flex",
@@ -112,7 +97,6 @@ export default function ProviderCard({ provider }) {
                 fontSize: 16,
                 fontFamily: "Sora, sans-serif",
                 fontWeight: 600,
-                flex: 1,
               }}
             >
               {kitchen_name}
@@ -127,24 +111,16 @@ export default function ProviderCard({ provider }) {
               }}
             >
               ₹{price_per_day}
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 400,
-                  color: "#6B5744",
-                }}
-              >
+              <span style={{ fontSize: 11, fontWeight: 400, color: "#6B5744" }}>
                 /day
               </span>
             </div>
           </div>
 
-          {/* Cuisine and Location */}
           <div style={{ fontSize: 13, color: "#6B5744", marginBottom: 8 }}>
             {cuisine_type} • 📍 {locality}
           </div>
 
-          {/* Bio */}
           {bio && (
             <p
               style={{
@@ -162,25 +138,21 @@ export default function ProviderCard({ provider }) {
             </p>
           )}
 
-          {/* Rating and Delivery Time */}
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              flexWrap: "wrap",
-              gap: 8,
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <Stars rating={Number(avg_rating || 0)} />
+              <Stars rating={parseFloat(avg_rating) || 0} />
               {review_count > 0 && (
                 <span style={{ fontSize: 12, color: "#AAA" }}>
                   ({review_count})
                 </span>
               )}
             </div>
-
             {delivery_time && (
               <span
                 style={{

@@ -1,6 +1,8 @@
 import { Routes, Route } from "react-router-dom";
+
 import NavBar from "./components/NavBar";
 import ChatWidget from "./components/ChatWidget";
+import { Toaster } from "react-hot-toast";
 import HomePage from "./pages/HomePage";
 import ProviderDetailPage from "./pages/ProviderDetailPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -10,6 +12,7 @@ export default function App() {
   return (
     <div className="min-h-screen" style={{ background: "var(--cream)" }}>
       {/* Navigation Bar - appears on all pages */}
+      <Toaster position="top-right" />
       <NavBar />
 
       {/* Main content - changes based on route */}
