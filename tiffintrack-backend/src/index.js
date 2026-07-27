@@ -50,11 +50,11 @@ app.use("/api/subscriptions", require("./routes/subscriptions"));
 // app.use('/api/reviews',       require('./routes/reviews'));
 // app.use('/api/chat',          require('./routes/chat'));
 // app.use('/api/enquiries',     require('./routes/enquiries'));
-// app.use('/api/provider',      require('./routes/provider/dashboard'));
+app.use("/api/provider", require("./routes/provider/dashboard"));
 // app.use('/api/provider',      require('./routes/provider/menu'));
 // app.use('/api/provider',      require('./routes/provider/subscribers'));
 // app.use('/api/provider',      require('./routes/provider/plans'));
-// app.use('/api/provider',      require('./routes/provider/profile'));
+app.use("/api/provider", require("./routes/provider/profile"));
 
 // WebSocket for delivery tracking (uncomment after creating websocket.js)
 // require('./websocket')(server);

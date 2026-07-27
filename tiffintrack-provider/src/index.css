@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --saffron: #E8670A;
+  --saffron-light: #FFF3E8;
+  --saffron-dark: #B84E00;
+  --leaf: #2D6A4F;
+  --leaf-light: #E8F5EE;
+  --turmeric: #F4A811;
+  --clay: #6B3F2A;
+  --cream: #FDF6ED;
+  --charcoal: #1A1410;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--charcoal);
+}
+
+h1, h2, h3, h4, h5, h6, .brand { font-family: 'Sora', sans-serif; }
+
+.btn-primary {
+  background: var(--saffron);
+  color: white;
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+.btn-primary:hover { background: var(--saffron-dark); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+input, select, textarea {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #E8D8C8;
+  font-size: 15px;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  width: 100%;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--saffron); }
+
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B5744;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: -6px;
+}
+
+.auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-card {
+  background: white;
+  border: 1px solid #F0E8DC;
+  border-radius: 20px;
+  padding: 32px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(232, 103, 10, 0.08);
+}
+
+.radio-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1.5px solid #E8D8C8;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+.radio-chip input { width: auto; }
