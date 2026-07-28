@@ -22,6 +22,7 @@ export default function SetupPage() {
     city: "Udupi",
     cuisine_type: "Udupi",
     diet_type: "veg",
+    phone: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -81,6 +82,14 @@ export default function SetupPage() {
           <input
             value={form.city}
             onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
+            required
+          />
+          <label className="field-label">Phone Number</label>
+          <input
+            type="tel"
+            placeholder="e.g. 9876543210"
+            value={form.phone}
+            onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
             required
           />
 

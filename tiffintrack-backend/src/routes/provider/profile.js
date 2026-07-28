@@ -2,6 +2,7 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const db = require("../../db");
 const auth = require("../../middleware/auth");
+const { upload } = require("../../services/cloudinaryService");
 
 // Small guard so a customer JWT can't hit provider-only routes
 function requireProvider(req, res, next) {
@@ -18,6 +19,7 @@ router.post("/setup", auth, requireProvider, async (req, res) => {
   const {
     kitchen_name,
     locality,
+    phone,
     city = "Udupi",
     cuisine_type,
     diet_type,
@@ -34,22 +36,40 @@ router.post("/setup", auth, requireProvider, async (req, res) => {
       [req.user.userId],
     );
     if (existing.rows[0]) {
-      return res
-        .status(409)
-        .json({
-          error: "Kitchen profile already exists",
-          providerId: existing.rows[0].id,
-        });
+      return res.status(409).json({
+        error: "Kitchen profile already exists",
+        providerId: existing.rows[0].id,
+      });
     }
 
-    const result = await db.query(
-      `INSERT INTO providers
-         (user_id, kitchen_name, locality, city, cuisine_type, diet_type,
-          capacity, verified, accept_new)
-       VALUES ($1, $2, $3, $4, $5, $6, 20, false, true)
-       RETURNING *`,
-      [req.user.userId, kitchen_name, locality, city, cuisine_type, diet_type],
-    );
+const result = await db.query(
+  `INSERT INTO providers
+     (
+       user_id,
+       kitchen_name,
+       locality,
+       phone,
+       city,
+       cuisine_type,
+       diet_type,
+       price_per_day,
+       capacity,
+       verified,
+       accept_new
+     )
+   VALUES
+     ($1, $2, $3, $4, $5, $6, $7, 0, 20, false, true)
+   RETURNING *`,
+  [
+    req.user.userId,
+    kitchen_name,
+    locality,
+    phone,
+    city,
+    cuisine_type,
+    diet_type,
+  ],
+);
 
     res.status(201).json({ provider: result.rows[0] });
   } catch (err) {
@@ -98,6 +118,9 @@ router.put("/profile", auth, requireProvider, async (req, res) => {
     languages,
     working_hours,
     accept_new,
+    breakfast_available,
+    lunch_available,
+    dinner_available,
   } = req.body;
 
   try {
@@ -118,8 +141,11 @@ router.put("/profile", auth, requireProvider, async (req, res) => {
          delivery_time  = COALESCE($13, delivery_time),
          languages      = COALESCE($14, languages),
          working_hours  = COALESCE($15, working_hours),
-         accept_new     = COALESCE($16, accept_new)
-       WHERE user_id = $17
+         accept_new     = COALESCE($16, accept_new),
+         breakfast_available = COALESCE($17, breakfast_available),
+         lunch_available     = COALESCE($18, lunch_available),
+         dinner_available    = COALESCE($19, dinner_available)
+       WHERE user_id = $20
        RETURNING *`,
       [
         kitchen_name,
@@ -138,6 +164,9 @@ router.put("/profile", auth, requireProvider, async (req, res) => {
         languages,
         working_hours,
         accept_new,
+        breakfast_available,
+        lunch_available,
+        dinner_available,
         req.user.userId,
       ],
     );
@@ -149,6 +178,34 @@ router.put("/profile", auth, requireProvider, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// POST /api/provider/upload-photo
+// multipart/form-data, field name "photo". Streams to Cloudinary via
+// multer-storage-cloudinary, then saves the returned URL onto the
+// provider's photo_url column — the same field the customer app reads.
+router.post(
+  "/upload-photo",
+  auth,
+  requireProvider,
+  upload.single("photo"),
+  async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: "No photo uploaded" });
+    }
+    try {
+      const result = await db.query(
+        `UPDATE providers SET photo_url = $1 WHERE user_id = $2 RETURNING *`,
+        [req.file.path, req.user.userId],
+      );
+      if (!result.rows[0]) {
+        return res.status(404).json({ error: "Provider profile not found" });
+      }
+      res.json({ provider: result.rows[0], photo_url: req.file.path });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+);
 
 // PUT /api/provider/password — change password
 router.put("/password", auth, requireProvider, async (req, res) => {
