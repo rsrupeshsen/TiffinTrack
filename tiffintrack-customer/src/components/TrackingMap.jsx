@@ -53,7 +53,7 @@ export default function TrackingMap({ providerId, customerAddress }) {
 
     // ⚡ FIXED: Use environment variable for WebSocket URL
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-    const wsUrl = apiUrl.replace("http", "ws");
+    const wsUrl = apiUrl.replace(/^http/, "ws") + "/ws";
 
     console.log("Connecting to WebSocket:", wsUrl);
     const ws = new WebSocket(wsUrl);
@@ -123,7 +123,7 @@ export default function TrackingMap({ providerId, customerAddress }) {
     return () => {
       ws.close();
     };
-  }, [providerId, customerAddress, isDelivering]);
+  }, [providerId, customerAddress]);
 
   return (
     <div style={{ width: "100%" }}>

@@ -255,7 +255,7 @@ function ToggleRow({ label, hint, checked, onChange }) {
           style={{ opacity: 0, width: 0, height: 0 }}
         />
         <span
-          onClick={onChange}
+          //   onClick={onChange}
           style={{
             position: "absolute",
             cursor: "pointer",

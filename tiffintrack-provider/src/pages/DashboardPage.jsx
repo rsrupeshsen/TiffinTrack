@@ -90,6 +90,13 @@ export default function DashboardPage() {
             Subscribers
           </Link>
           <Link
+            to="/deliver"
+            className="btn-primary"
+            style={{ textDecoration: "none", background: "#A32D2D" }}
+          >
+            📍 Start Delivery
+          </Link>
+          <Link
             to="/settings"
             style={{
               textDecoration: "none",
@@ -100,6 +107,13 @@ export default function DashboardPage() {
             }}
           >
             Settings
+          </Link>
+          <Link
+            to="/menu"
+            className="btn-primary"
+            style={{ textDecoration: "none" }}
+          >
+            Edit menu
           </Link>
           <button
             onClick={() => {

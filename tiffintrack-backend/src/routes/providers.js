@@ -87,10 +87,17 @@ router.get("/:id", async (req, res) => {
       ),
       db.query(
         `SELECT * FROM menus 
-         WHERE provider_id = $1 
-         AND week_start_date >= CURRENT_DATE - INTERVAL '7 days'
-         ORDER BY day_of_week ASC 
-         LIMIT 7`,
+   WHERE provider_id = $1 
+   AND week_start_date = (
+     SELECT MAX(week_start_date) FROM menus WHERE provider_id = $1
+   )
+   ORDER BY 
+     CASE day_of_week
+       WHEN 'Mon' THEN 1 WHEN 'Tue' THEN 2 WHEN 'Wed' THEN 3
+       WHEN 'Thu' THEN 4 WHEN 'Fri' THEN 5 WHEN 'Sat' THEN 6
+       WHEN 'Sun' THEN 7
+     END
+   LIMIT 7`,
         [id],
       ),
       db.query(

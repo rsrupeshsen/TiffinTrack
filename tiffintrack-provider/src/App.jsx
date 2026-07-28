@@ -3,11 +3,13 @@ import { Toaster } from "react-hot-toast";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import SetupPage from "./pages/SetupPage";
+import MenuPage from "./pages/MenuPage";
 import DashboardPage from "./pages/DashboardPage";
 import KitchenManagementPage from "./pages/KitchenManagementPage";
 import PlansPage from "./pages/PlansPage";
 import SubscribersPage from "./pages/SubscribersPage";
 import SettingsPage from "./pages/SettingsPage";
+import DeliveryPage from "./pages/DeliveryPage";
 
 export default function App() {
   return (
@@ -19,10 +21,12 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/setup" element={<SetupPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/menu" element={<MenuPage />} />
         <Route path="/kitchen" element={<KitchenManagementPage />} />
         <Route path="/plans" element={<PlansPage />} />
         <Route path="/subscribers" element={<SubscribersPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/deliver" element={<DeliveryPage />} />
       </Routes>
     </div>
   );
