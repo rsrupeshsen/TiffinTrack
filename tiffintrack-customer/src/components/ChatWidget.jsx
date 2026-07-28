@@ -13,7 +13,8 @@ export default function ChatWidget() {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sessionId] = useState(() => Math.random().toString(36).slice(2));
+
+  const [sessionId] = useState(() => crypto.randomUUID());
 
   const bottomRef = useRef(null);
   const inputRef = useRef(null);

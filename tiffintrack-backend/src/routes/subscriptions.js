@@ -2,14 +2,23 @@ const router = require("express").Router();
 const db = require("../db");
 const auth = require("../middleware/auth");
 
-// GET /api/subscriptions/me
 router.get("/me", auth, async (req, res) => {
   console.log("JWT User:", req.user);
   try {
     const result = await db.query(
       `SELECT s.*, p.kitchen_name, p.locality, p.upi_id, p.photo_url,
               pl.name AS plan_name, pl.days AS plan_days, pl.price AS plan_price,
-              u.name AS provider_owner_name
+              u.name AS provider_owner_name,
+              EXISTS (
+                SELECT 1 FROM pauses ps
+                WHERE ps.subscription_id = s.id AND ps.pause_date = CURRENT_DATE
+              ) AS is_paused_today,
+              COALESCE(
+                (SELECT array_agg(ps.pause_date ORDER BY ps.pause_date)
+                 FROM pauses ps
+                 WHERE ps.subscription_id = s.id AND ps.pause_date >= CURRENT_DATE),
+                '{}'
+              ) AS upcoming_pauses
        FROM subscriptions s
        JOIN providers p ON p.id = s.provider_id
        JOIN plans pl ON pl.id = s.plan_id
@@ -24,13 +33,11 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
-// POST /api/subscriptions — subscribe to a plan
 router.post("/", auth, async (req, res) => {
   const { provider_id, plan_id, meal_type = "lunch" } = req.body;
   if (!provider_id || !plan_id)
     return res.status(400).json({ error: "provider_id and plan_id required" });
   try {
-    // Check capacity
     const cap = await db.query(
       `SELECT p.capacity,
         (SELECT COUNT(*) FROM subscriptions WHERE provider_id = p.id AND status = 'active') AS current
@@ -48,7 +55,6 @@ router.post("/", auth, async (req, res) => {
       [req.user.userId, provider_id, plan_id, meal_type],
     );
 
-    // Get UPI ID so customer can pay
     const provRes = await db.query(
       "SELECT upi_id, kitchen_name FROM providers WHERE id = $1",
       [provider_id],
@@ -59,9 +65,8 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// POST /api/subscriptions/:id/pause
 router.post("/:id/pause", auth, async (req, res) => {
-  const { dates } = req.body; // array of 'YYYY-MM-DD'
+  const { dates } = req.body;
   if (!dates?.length)
     return res.status(400).json({ error: "dates array required" });
   try {
@@ -76,7 +81,6 @@ router.post("/:id/pause", auth, async (req, res) => {
   }
 });
 
-// POST /api/subscriptions/:id/cancel
 router.post("/:id/cancel", auth, async (req, res) => {
   try {
     await db.query(

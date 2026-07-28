@@ -125,7 +125,6 @@ export default function DashboardPage() {
               overflow: "hidden",
             }}
           >
-            {/* Subscription Header */}
             <div
               style={{
                 padding: "16px 20px",
@@ -163,26 +162,34 @@ export default function DashboardPage() {
                   fontSize: 12,
                   fontWeight: 600,
                   background:
-                    sub.status === "active"
-                      ? "#E8F5EE"
-                      : sub.status === "paused"
+                    sub.status === "cancelled"
+                      ? "#FDE8E8"
+                      : sub.is_paused_today || sub.upcoming_pauses?.length > 0
                         ? "#FFF3E8"
-                        : "#FDE8E8",
+                        : "#E8F5EE",
                   color:
-                    sub.status === "active"
-                      ? "#2D6A4F"
-                      : sub.status === "paused"
+                    sub.status === "cancelled"
+                      ? "#A32D2D"
+                      : sub.is_paused_today || sub.upcoming_pauses?.length > 0
                         ? "#B84E00"
-                        : "#A32D2D",
+                        : "#2D6A4F",
                 }}
               >
-                {sub.status === "active" && "● Active"}
-                {sub.status === "paused" && "⏸ Paused"}
                 {sub.status === "cancelled" && "✕ Cancelled"}
+                {sub.status !== "cancelled" &&
+                  sub.is_paused_today &&
+                  "⏸ Paused today"}
+                {sub.status !== "cancelled" &&
+                  !sub.is_paused_today &&
+                  sub.upcoming_pauses?.length > 0 &&
+                  `⏸ ${sub.upcoming_pauses.length} upcoming pause(s)`}
+                {sub.status !== "cancelled" &&
+                  !sub.is_paused_today &&
+                  (!sub.upcoming_pauses || sub.upcoming_pauses.length === 0) &&
+                  "● Active"}
               </span>
             </div>
 
-            {/* Today's Menu (if exists) */}
             {sub.today_menu && (
               <div
                 style={{
@@ -214,7 +221,6 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* Actions */}
             <div
               style={{
                 padding: "12px 20px",
